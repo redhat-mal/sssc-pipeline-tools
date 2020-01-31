@@ -1,0 +1,40 @@
+{{- if .Values.enabled }}
+
+{{- if .Values.master.ingress.enabled }}
+apiVersion: {{ .Values.master.ingress.apiVersion }}
+kind: Ingress
+metadata:
+  labels:
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
+{{- if .Values.master.ingress.labels }}
+{{ toYaml .Values.master.ingress.labels | indent 4 }}
+{{- end }}
+{{- if .Values.master.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.master.ingress.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "jenkins.name" . }}
+  namespace: {{ .Values.namespace }}
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          serviceName: {{ template "jenkins.name" . }}
+          servicePort: {{ .Values.master.servicePort }}
+{{- if .Values.master.ingress.path }}
+        path: {{ .Values.master.ingress.path }}
+{{- end -}}
+{{- if .Values.global.jenkins_hostName }}
+    host: {{ .Values.global.jenkins_hostName | quote }}
+{{- end }}
+{{- if .Values.master.ingress.tls }}
+  tls:
+{{ toYaml .Values.master.ingress.tls | indent 4 }}
+{{- end -}}
+{{- end }}
+{{- end }}

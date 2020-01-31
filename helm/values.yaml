@@ -1,0 +1,13 @@
+
+jenkins:
+  namespace: 'sssc-tools'
+  enabled: true
+
+sonarqube:
+  namespace: 'sssc-tools'
+  enabled: true
+
+global:
+  jenkins_hostName: "jenkins-sssc-tools.apps.mikes.sandbox1661.opentlc.com"
+  foo: "hello world"
+
