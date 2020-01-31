@@ -13,7 +13,7 @@ master:
   # Used for label app.kubernetes.io/component
   componentName: "jenkins-master"
   image: "jenkins/jenkins"
-  imageTag: "latest"
+  imageTag: "lts"
   imagePullPolicy: "Always"
   imagePullSecretName:
   # Optionally configure lifetime for master-container
@@ -75,8 +75,8 @@ master:
   usePodSecurityContext: false
   # Set runAsUser to 1000 to let Jenkins run as non-root user 'jenkins' which exists in 'jenkins/jenkins' docker image.
   # When setting runAsUser to a different value than 0 also set fsGroup to the same value:
-  # runAsUser: <defaults to 0>
-  # fsGroup: <will be omitted in deployment if runAsUser is 0>
+  runAsUser: 1000
+  fsGroup: 1000
   servicePort: 8080
   # For minikube, set this to NodePort, elsewhere use LoadBalancer
   # Use ClusterIP if your setup includes ingress controller
@@ -147,10 +147,10 @@ master:
 
   # List of plugins to be install during Jenkins master start
   installPlugins:
+    - workflow-job:2.33
     - kubernetes:1.14.0
-    - workflow-job:2.31
     - workflow-aggregator:2.6
-    - credentials-binding:1.17
+    - credentials-binding:1.18
     - git:3.9.1
 
   # Enable to always override the installed plugins with the values of 'master.installPlugins' on upgrade or redeployment.
