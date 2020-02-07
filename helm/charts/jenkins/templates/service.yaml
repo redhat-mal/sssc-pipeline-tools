@@ -2,41 +2,48 @@
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    service.alpha.openshift.io/dependencies: '[{"name": "{{template "jenkins.name" . }}-jnlp",
+        "namespace": "", "kind": "Service"}]'
+    service.openshift.io/infrastructure: "true"
   name: {{template "jenkins.name" . }}
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Values.global.namespace }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
     "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
     "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
-    "app.kubernetes.io/instance": "{{ .Release.Name }}"
-    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
-    {{- if .Values.master.serviceLabels }}
-{{ toYaml .Values.master.serviceLabels | indent 4 }}
-    {{- end }}
-{{- if .Values.master.serviceAnnotations }}
-  annotations:
-{{ toYaml .Values.master.serviceAnnotations | indent 4 }}
-{{- end }}
 spec:
   ports:
-    - port: {{.Values.master.servicePort}}
-      name: http
-      targetPort: 8080
-      {{if (and (eq .Values.master.serviceType "NodePort") (not (empty .Values.master.nodePort)))}}
-      nodePort: {{.Values.master.nodePort}}
-      {{end}}
+  - name: web
+    nodePort: 0
+    port: 80
+    protocol: TCP
+    targetPort: 8080
   selector:
-    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
-    "app.kubernetes.io/instance": "{{ .Release.Name }}"
-  type: {{.Values.master.serviceType}}
-  {{if eq .Values.master.serviceType "LoadBalancer"}}
-{{- if .Values.master.loadBalancerSourceRanges }}
-  loadBalancerSourceRanges:
-{{ toYaml .Values.master.loadBalancerSourceRanges | indent 4 }}
+    name: {{template "jenkins.name" . }}
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{template "jenkins.name" . }}-jnlp
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  ports:
+  - name: agent
+    nodePort: 0
+    port: 50000
+    protocol: TCP
+    targetPort: 50000
+  selector:
+    name: {{template "jenkins.name" . }}
+  sessionAffinity: None
+  type: ClusterIP
 {{- end }}
-  {{if .Values.master.loadBalancerIP}}
-  loadBalancerIP: {{.Values.master.loadBalancerIP}}
-  {{end}}
-  {{end}}
-  {{- end }}
+
+
 

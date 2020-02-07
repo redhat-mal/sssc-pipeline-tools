@@ -1,0 +1,53 @@
+{{- if .Values.enabled }}
+apiVersion: v1
+kind: ImageStream
+metadata:
+  labels:
+    build: {{ template "jenkins.name" . }}
+    app: {{ template "jenkins.name" . }}
+  name: {{ template "jenkins.name" . }}
+  namespace: {{ .Values.global.namespace }}
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    build: {{ template "jenkins.name" . }}
+    app: {{ template "jenkins.name" . }}
+    type: "image"
+  name: {{ template "jenkins.name" . }}
+  namespace: {{ .Values.global.namespace }}
+spec:
+  failedBuildsHistoryLimit: 5
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: {{ template "jenkins.name" . }}:latest
+  runPolicy: Serial
+  source:
+    git:
+      ref: "{{ .Values.build.source_repository_ref }}"
+      uri: "{{ .Values.build.source_repository_url }}"
+    type: Git
+  strategy:
+    sourceStrategy:
+      from:
+#        kind: DockerImage
+#        name: {{ .Values.build.from_docker_image_registry_url }}:{{ .Values.build.from_docker_tag }}
+        kind: ImageStreamTag
+        name: "{{ .Values.build.from_image_name }}:latest"
+        namespace: "{{ .Values.build.from_image_namespace }}"
+    type: Source
+  successfulBuildsHistoryLimit: 5
+  triggers:
+  - github:
+      secret: uIdcKhhfsZWxMA4FEA5k
+    type: GitHub
+  - generic:
+      secret: Iwvl9-Gr4oAq58MLX1cv
+    type: Generic
+  - type: ConfigChange
+  - imageChange:
+    type: ImageChange
+{{- end }}

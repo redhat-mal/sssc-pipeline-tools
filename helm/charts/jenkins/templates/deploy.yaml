@@ -1,0 +1,124 @@
+{{- if .Values.enabled }}
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    template.alpha.openshift.io/wait-for-ready: "true"
+  name: {{ template "jenkins.name" . }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
+spec:
+  replicas: 1
+  selector:
+    name: {{ template "jenkins.name" . }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        name: {{ template "jenkins.name" . }}
+    spec:
+      containers:
+        - capabilities: {}
+          env:
+            - name: JAVA_OPTS
+              value: {{ default "" .Values.master.javaOpts | quote }}
+            - name: JENKINS_OPTS
+              value: "{{ if .Values.master.jenkinsUriPrefix }}--prefix={{ .Values.master.jenkinsUriPrefix }} {{ end }}{{ default "" .Values.master.jenkinsOpts}}"
+            - name: JENKINS_SLAVE_AGENT_PORT
+              value: "{{ .Values.master.slaveListenerPort }}"
+            - name: OPENSHIFT_ENABLE_OAUTH
+              value: "{{ .Values.master.enableOauth }}"
+            - name: OPENSHIFT_ENABLE_REDIRECT_PROMPT
+              value: "true"
+            - name: DISABLE_ADMINISTRATIVE_MONITORS
+              value: "false"
+            - name: KUBERNETES_MASTER
+              value: "https://kubernetes.default:443"
+            - name: KUBERNETES_TRUST_CERTIFICATES
+              value: "true"
+            - name: JENKINS_SERVICE_NAME
+              value: "{{ template "jenkins.name" . }}"
+            - name: JNLP_SERVICE_NAME
+              value: "{{ template "jenkins.name" . }}-jnlp"
+            - name: ENABLE_FATAL_ERROR_LOG_FILE
+              value: "false"
+            - name: JENKINS_UC_INSECURE
+              value: "false"
+            - name: JENKINS_OPTS
+              value: "--sessionTimeout=0"
+      {{- if .Values.master.sharedLibs.enabled }}
+            - name: SHARED_LIB_REPO
+              value: {{ .Values.master.sharedLibs.repo }}
+            - name: SHARED_LIB_NAME
+              value: {{ .Values.master.sharedLibs.name }}
+            - name: SHARED_LIB_REF
+              value: {{ .Values.master.sharedLibs.ref }}
+            - name: SHARED_LIB_SECRET
+              value: {{ .Values.master.sharedLibs.secret }}
+      {{- end }}
+      {{- if .Values.master.gitlab.enabled }} 
+            - name: GITLAB_HOST
+              value: {{ .Values.master.gitlab.host }}
+            - name: GITLAB_TOKEN
+              value: {{ .Values.master.gitlab.token }}
+            - name: GITLAB_GROUP_NAME
+              value: {{ .Values.master.gitlab.group_name }}
+      {{- end }}
+          image: ' '
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 2
+            httpGet:
+              path: /login
+              port: 8080
+            initialDelaySeconds: 420
+            periodSeconds: 360
+            timeoutSeconds: 240
+          name: jenkins
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: 8080
+            initialDelaySeconds: 3
+            timeoutSeconds: 240
+          resources:
+{{ toYaml .Values.master.resources | indent 12 }}
+          securityContext:
+            capabilities: {}
+            privileged: false
+          terminationMessagePath: /dev/termination-log
+          volumeMounts:
+            - mountPath: /var/lib/jenkins
+              name: {{ template "jenkins.name" . }}-data
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      serviceAccountName: "{{ template "jenkins.serviceAccountName" . }}"
+      volumes:
+        - name: {{ template "jenkins.name" . }}-data
+      {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "jenkins.name" .) }}
+      {{- else }}
+          emptyDir: {}
+      {{- end }}
+  triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - jenkins
+        from:
+          kind: ImageStreamTag
+          name: {{ template "jenkins.name" . }}:latest
+          namespace:  {{ .Values.global.namespace }}
+        lastTriggeredImage: ""
+      type: ImageChange
+    - type: ConfigChange
+
+{{- end }}
+

@@ -1,13 +1,11 @@
 
 jenkins:
-  namespace: 'sssc-tools'
   enabled: true
 
 sonarqube:
-  namespace: 'sssc-tools'
   enabled: true
 
 global:
-  jenkins_hostName: "jenkins-sssc-tools.apps.mikes.sandbox1661.opentlc.com"
-  foo: "hello world"
-
+  jenkins_hostName: "jenkins:8080"
+  clusterType: "OCP"
+  namespace: "sssc-demo"
