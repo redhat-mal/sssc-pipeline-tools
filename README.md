@@ -1,4 +1,4 @@
-# sssc-pipeline-tools
+# tssc-pipeline-tools
 Trusted Software Supply Chain Pipeline Tools
 
 ## Overview
