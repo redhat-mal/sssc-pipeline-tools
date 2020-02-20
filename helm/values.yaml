@@ -4,8 +4,10 @@ jenkins:
 
 sonarqube:
   enabled: true
+scanning_service:
+  enabled: true
 
 global:
   jenkins_hostName: "jenkins:8080"
   clusterType: "OCP"
-  namespace: "sssc-demo"
+  namespace: "mike-demo"

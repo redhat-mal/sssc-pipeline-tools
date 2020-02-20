@@ -210,10 +210,12 @@ items:
     annotations:
       serviceaccounts.openshift.io/oauth-redirectreference.sonarqube: '{"kind":"OAuthRedirectReference","apiVersion":"v1","reference":{"kind":"Route","name":"sonarqube"}}'
     name: {{ template "sonarqube.name" . }}
+    namespace: {{ .Values.global.namespace }}
 - apiVersion: v1
   kind: RoleBinding
   metadata:
     name: sonarqube_view
+    namespace: {{ .Values.global.namespace }}
   roleRef:
     name: view
   subjects:

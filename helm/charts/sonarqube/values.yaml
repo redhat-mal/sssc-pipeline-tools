@@ -6,7 +6,7 @@
 enabled: false
 
 build:
-  source_repository_url: "https://github.com/redhat-cop/containers-quickstarts.git"
+  source_repository_url: "https://github.com/redhat-mal/containers-quickstarts.git"
   source_repository_ref: "master"
   source_context_dir: "sonarqube"
   from_docker_image: "sonarqube"
