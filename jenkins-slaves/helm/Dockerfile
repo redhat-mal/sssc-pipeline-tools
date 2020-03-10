@@ -1,4 +1,4 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.3
+FROM registry.redhat.io/openshift4/ose-jenkins-agent-base:latest
 
 ARG VERSION=3.0.3
 
