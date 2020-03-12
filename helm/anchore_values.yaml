@@ -1,0 +1,5 @@
+
+anchoreGlobal:
+  defaultAdminPassword: Redhat123!
+  defaultAdminEmail: mlacours@redhat.com
+  openShiftDeployment: True

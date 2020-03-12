@@ -1,0 +1,12 @@
+# Default values for nexus.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+enabled: true
+replicaCount: 1
+memore_limit: 1Gi
+
+persistence:
+  enabled:  false
+  capacity: 12Gi
+

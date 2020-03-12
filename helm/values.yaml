@@ -1,13 +1,53 @@
 
 jenkins:
   enabled: true
-
+nexus:
+  enabled: true
 sonarqube:
   enabled: true
-scanning_service:
+anchore:
   enabled: true
 
 global:
   jenkins_hostName: "jenkins:8080"
   clusterType: "OCP"
-  namespace: "mike-demo"
+  namespace: "tssc-demo"
+  nexus_user: "admin"
+  nexus_password: "admin123"
+  nexus_repo_url: "repo-nexus.apps.mikes.sandbox1072.opentlc.com"
+  redhat_auth: "{\"auths\":{\"registry.redhat.io\"{\"NTEwNzU5NDh8dWhjLTFITVJ6YU41aHB4QnZZdlF4ZEFoN0RCenJJcjpleUpoYkdjaU9pSlNVelV4TWlKOS5leUp6ZFdJaU9pSmxOVEJrWm1ZellqYzRNelEwTjJRek9USmtNemxrTlRSbFpUbG1aR1F6TkNKOS5DOVZBOGdtX05Lb0hKVjRRdHhfcnV5a2dVaGt4S09JRGZOWWh2aWZQek9oOHNfZ1lBTTRVUk9MSVFPalVqcnJ0bjFtY2llM2U3R0R2dUI1MWxMYWtaNU1pMEZHZ2xVeERpWnNna1VpZ0tjanRhNFNxVlpNTXQ1VXpsMk9vcHE4SnYzUEFJMi1hZDhkaXFBYUZJdW95UnhEc2hBQkFzeXNQM25CTTBnU2gzSXRzZ01ZQnVoYXkxT3RtS28wV0RwNUI5X1FWOE1iYkZiWTNpY1RmOEY2WWktQkRrWldzZVRLSGhzenhkbllfemx6TmdfUTAwYWhrdUhsNmxaNWpEZ0tIb3ZWZ2d6SWx5YTdILWtnT3k3VWFTU1F6Uk05ak5HZm5XN3dBZnZQblpKZkg5UjlUdUlCbTRZMFkzMHNyeEZtYl96bDgtdGxYVXdQQkVHNDd0anhMNllNcFhsNDhaaXB4a0N6STVja1dGNUs3YTJlOUE4bHNCLWNoUWVhM0VzTVBPY2d1bi03aUo5aXBFZ0stSHoxSW1mcXJ3RTZqc1ZQQ1J5d1dOdEZxUldhanBOZnJfMzd2N19ST1IyTng0WlpJRExKa3hrY295bVRaa05WUlZWeHY1cGVScWcwYVBneEx4ZjNleHVzXzhPQUtfR3F3bHo5Wm5vNVJSQk83SEIzcW96Mk9EZ0pQU3gyTDliQUJMNE1RbXE0ZnJtc1NvSmhSTmtENVlhNUstTDlrNEFSSHN3OTFNekplYjFUS0ZEWHlCLUlqbDVlOTduZE1yanF1b2gtSWhIVTNtemxhbE9ZSHA1UlBUZzVXT19Cd1dkeE4teVlucG5KU3g4TE5ncXhpQnVoLXFJbW9lNnBxd3ZkR3pUaVNfVkZRU1RmNG9nTUsxQjgwTmtkODFJOA==\",\"email\":\"mlacours@redhat.com\"}}}"
+
+anchore-engine:
+  postgresql:
+    image: registry.access.redhat.com/rhscl/postgresql-10-rhel7
+    imageTag: latest
+    extraEnv:
+    - name: POSTGRESQL_USER
+      value: anchoreengine
+    - name: POSTGRESQL_PASSWORD
+      value: anchore
+    - name: POSTGRESQL_DATABASE
+      value: anchore
+    - name: PGUSER
+      value: postgres
+    - name: LD_LIBRARY_PATH
+      value: /opt/rh/rh-postgresql96/root/usr/lib64
+    - name: PATH
+      value: /opt/rh/rh-postgresql96/root/usr/bin:/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    postgresPassword: anchore
+    persistence:
+      enabled: false
+
+  anchoreGlobal:
+    defaultAdminPassword: anchore
+    defaultAdminEmail: mlacours@redhat.com
+    openShiftDeployment: True
+
+  redis:
+    master:
+      securityContext:
+        enabled: false
+    slave:
+      securityContext:
+        enabled: false
+

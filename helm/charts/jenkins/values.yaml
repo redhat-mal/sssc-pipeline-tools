@@ -53,6 +53,14 @@ persistence:
   accessMode: "ReadWriteOnce"
   size: "8Gi"
 
+agents:
+  helm:
+    name: helm-agent
+    source_repository_url: "https://github.com/redhat-mal/tssc-pipeline-tools.git"
+    source_repository_ref: "master"
+    source_context_dir: "jenkins-slaves/helm"
+    docker_image: "registry.redhat.io/openshift4/ose-jenkins-agent-base:latest"
+                    
 build:
   source_repository_url: "https://github.com/redhat-mal/s2i-config-jenkins.git"
   source_repository_ref: "master"
