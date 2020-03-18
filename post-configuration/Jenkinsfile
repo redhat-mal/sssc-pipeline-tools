@@ -19,7 +19,6 @@ pipeline {
       }
       steps {
           sh """
-            ls -lrt
              ./post-configuration/nexus-setup.sh
           """
           }        
@@ -32,10 +31,18 @@ pipeline {
       }
       steps {
           sh """
-             ./anchore-setup.sh
+             ./post-configuration/anchore-setup.sh
+             
           """
           }        
       }
 
+	  stage('Jenkins Reconfigure') {
+      steps {
+          sh """
+            oc delete pods  $(oc get pods --no-headers=true | grep jenkins | awk '{ print $1 }')
+          """
+          }        
+      }
    }
 }
