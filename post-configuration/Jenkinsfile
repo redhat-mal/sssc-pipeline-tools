@@ -19,7 +19,8 @@ pipeline {
       }
       steps {
           sh """
-             ./nexus-setup.sh
+            ls -lrt
+             ./post-configuration/nexus-setup.sh
           """
           }        
       }
