@@ -1,0 +1,42 @@
+
+openshift.withCluster() {
+  env.NEXUS_ENABLED = "${NEXUS_ENABLED}"
+  env.ANCHORE_ENABLED = "${ANCHORE_ENABLED}"
+  env.TOOLS_NAMESPACE = "${TOOLS_NAMESPACE}"
+  echo "Configuring Pipeline Tools for ${TOOLS_NAMESPACE}..."
+}
+
+
+pipeline {
+  agent { label 'helm-agent' }
+  environment { 
+  }
+  stages {
+
+	  stage('Configure Nexus') {
+      when {
+        expression {
+          return env.NEXUS_ENABLED == 'true';
+        }
+      }
+      steps {
+          sh """
+             ./nexus-setup.sh
+          """
+          }        
+      }
+	  stage('Configure Anchore') {
+      when {
+        expression {
+          return env.ANCHORE_ENABLED == 'true';
+        }
+      }
+      steps {
+          sh """
+             ./anchore-setup.sh
+          """
+          }        
+      }
+
+   }
+}

@@ -33,8 +33,6 @@ spec:
   strategy:
     sourceStrategy:
       from:
-#        kind: DockerImage
-#        name: {{ .Values.build.from_docker_image_registry_url }}:{{ .Values.build.from_docker_tag }}
         kind: ImageStreamTag
         name: "{{ .Values.build.from_image_name }}:latest"
         namespace: "{{ .Values.build.from_image_namespace }}"
@@ -93,12 +91,13 @@ spec:
     type: Docker
   successfulBuildsHistoryLimit: 5
   triggers:
-  - github:
-      secret: LMXvyKLfn3-MY0-GOi0B
-    type: GitHub
-  - generic:
-      secret: pCIMGfFSMU2eLICEsGNI
-    type: Generic
+   - type: ConfigChange
+   - github:
+     secret: LMXvyKLfn3-MY0-GOi0B
+     type: GitHub
+   - generic:
+     secret: pCIMGfFSMU2eLICEsGNI
+     type: Generic
 ---
 apiVersion: v1
 kind: Secret
@@ -107,4 +106,35 @@ metadata:
 data:
   .dockerconfigjson: eyJhdXRocyI6eyJyZWdpc3RyeS5yZWRoYXQuaW8iOnsiYXV0aCI6Ik5UTXhPREl4TVh4MGMzTmpMV1JsYlc4dGJXdzZaWGxLYUdKSFkybFBhVXBUVlhwVmVFMXBTamt1WlhsS2VtUlhTV2xQYVVwc1QwZEZlazU2Um0xWlZFWnBUMFJuTUU1dFdtcFBSRmw2VDBkRmVGcEhVbXhPYWtFeFRXMUpkMDlEU2prdVpuQlFOVUoyWkRGNFZGSm9WVkJJUkVOclkweExMVmxPZFhSeWRHVm5TVVJNZWsxaFRsUlNSbU5XWlhsM1h5MDBZMnB4YjE5Zk9HSlBWVFp2TkRWc1dIbElhMDVpTWxodU1YTmtlakpHZUV0ck5Xa3dTblJYVFdKelFrb3dSV05KYTI5V2NXVnhVbXBDY0dGUFEycG5aWE5QVUUxeGVEWjRUV2cxWWs1NU5sbG9jbWRNTlRSd1JubGtjRlZoUm14MExXUkNiWHB5ZFhaS1JqbG5WbFJJWjBSS2FuaEhPSGt3UTB4M2VGTlFNbmh3YTNoaFV5MDVXakpFYzFOak5GSnNSRVJSUnpRNFYwNDNUbVV3TkRkMGJHcHRaRmR2TUdKMFkxbFNjRXQxYVZoelNuVlZlVmg0TjFsM1ppMWtUa3R0VjBSdlZtVndVa1ZPYW0xaloyWndZbGd6TmpoRlVFbFhORVZDVEZrek9GSmhVMnBNY25oM1RGVjRSbmhEV0ZONVdXY3RjbFJhV0dkUlRuVnRSSE5FZDBnNWExRnpYMGhJUzNVelFXOWhiMFpqTkUwelRsWTFUMGRVU3pSSVFsRTVXREZGVTNKQmRWRkZOVmxLWVZGUmFGaFNUa1oxYTBOemJIaGxkREptUmxGS1owaENhVWMyZVhwZlNsOWxjMFpUUVZsSVlVY3pYMmhCYm1sWWFIWmxRV1F4VFV4M1dWTlZPVlpXVWs5UWFHeGhhakY1ZW1ORmRFaFBXR1JRVkU5SVpsVmxaMjl2VGxWS1IwMUtSRVJOUkZWbk5uaHpaRkpsWmt4M2MzZEtjbkZQTnpVelRGWndlbmhxVERkb1dsUlhZMmxKZUZsWlgySjZhbmxEZVVWQk0ySlVPR0pqUkVoYVMyeHljbFpYYkZoeFNqWXlUV2hmTUZZeGRteERiVGd3WmpsNE9XcEpabGhEZVVaRE1GQlZialJpY0VkTGExUkpNa1pqWWxGNFFYbEdia2hJTTJSSGRVSnRiRlpDWkZSRk9YSlNhWEp1VVdwRU5tbFljRkZKTWxwZllscFRXa0l4V2pKVFlYTjRWblJuWjBNdFRuQmxla1JLWlhsNmVVcEVWRTVpZVZSNVExaHRiV0pvT0dkdmRUWjRaRGt5Tm5oQmRUVnlWRGs0VEZkNmFsRnJPRVJGU21oRWEwZDNjMlpGYjNCa2VsVmtkRTlGT0VrPSJ9fX0=
 type: kubernetes.io/dockerconfigjson
+---
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  annotations:
+    pipeline.alpha.openshift.io/uses: '[{"name": "jenkins", "namespace": "", "kind": "BuildConfig"}]'
+  labels:
+    app: {{ .Values.post_config.pipeline.name  }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name: {{ .Values.post_config.pipeline.name  }}
+  namespace: {{ .Values.global.namespace }}
+spec:
+  source:
+    type: Git
+    git:
+      uri: {{ .Values.post_config.pipeline.source_repo_url }}
+      ref: {{ .Values.post_config.pipeline.source_repo_ref }}
+    contextDir: {{ .Values.post_config.pipeline.source_context_dir }}
+  runPolicy: Serial
+  strategy:
+    type: "JenkinsPipeline"
+    jenkinsPipelineStrategy:
+      jenkinsfilePath: {{ .Values.post_config.pipeline.file_name }}
+      env:
+      - name: "TOOLS_NAMESPACE"
+        value: "{{ .Values.global.namespace }}"
+      - name: "ANCHORE_ENABLED"
+        value: "{{ .Values.global.anchore_enabled }}"
+      - name: "NEXUS_ENABLED"
+        value: "{{ .Values.global.nexus_enabled }}"
 {{- end }}

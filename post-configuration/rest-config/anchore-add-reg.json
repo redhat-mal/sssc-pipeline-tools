@@ -1,0 +1,10 @@
+{
+        "registry": "repo-nexus.apps.mikes.sandbox389.opentlc.com",
+        "registry_name": "repo-nexus.apps.mikes.sandbox389.opentlc.com",
+        "registry_pass": "admin123",
+	"registry_type": "docker_v2",
+        "registry_user": "admin",
+        "registry_verify": false,
+        "userId": "admin"
+}
+

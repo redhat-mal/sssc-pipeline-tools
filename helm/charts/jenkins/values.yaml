@@ -68,4 +68,10 @@ build:
   from_image_namespace: "openshift"
   from_docker_tag: "latest"
 
-
+post_config:
+  pipeline:
+    name: "tssc-post-config-runonce"
+    source_repo_url: "https://github.com/redhat-mal/tssc-pipeline-tools.git"
+    source_repo_ref: "master"
+    source_context_dir: "post-configuration"
+    file_name: "Jenkinsfile"

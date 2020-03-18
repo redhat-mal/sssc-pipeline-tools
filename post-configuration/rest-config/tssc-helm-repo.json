@@ -1,0 +1,5 @@
+{
+  "name": "tssc-helm-repo",
+  "type": "groovy",
+  "content": "import org.sonatype.nexus.blobstore.api.BlobStoreManager; import org.sonatype.nexus.repository.storage.WritePolicy;  repository.createRawHosted('helm', BlobStoreManager.DEFAULT_BLOBSTORE_NAME ,false, WritePolicy.ALLOW ); log.info('Script Helm Repositories completed successfully')"
+}
