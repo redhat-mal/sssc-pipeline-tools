@@ -9,8 +9,6 @@ openshift.withCluster() {
 
 pipeline {
   agent { label 'helm-agent' }
-  environment { 
-  }
   stages {
 
 	  stage('Configure Nexus') {
