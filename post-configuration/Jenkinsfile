@@ -19,7 +19,8 @@ pipeline {
       }
       steps {
           sh """
-             ./post-configuration/nexus-setup.sh
+             cd post-configuration
+             ./nexus-setup.sh
           """
           }        
       }
@@ -31,7 +32,8 @@ pipeline {
       }
       steps {
           sh """
-             ./post-configuration/anchore-setup.sh
+             cd post-configuration
+             ./anchore-setup.sh
              
           """
           }        
