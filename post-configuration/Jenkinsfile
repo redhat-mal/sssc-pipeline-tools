@@ -42,7 +42,6 @@ pipeline {
           sh """
             oc delete pods  $(oc get pods --no-headers=true | grep jenkins | awk '{ print $1 }')
           """
-          }        
-      }
-   }
+      }        
+    }
 }
