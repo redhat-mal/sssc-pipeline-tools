@@ -41,7 +41,7 @@ pipeline {
       steps {
           sh """
             ls -lrt 
-            oc delete pods $(oc get pods --no-headers=true | grep jenkins | awk '{ print $1 }')
+            oc delete pods \\$(oc get pods --no-headers=true | grep jenkins | awk '{ print \\$1 }')
           """
       }        
     }
