@@ -1,4 +1,4 @@
-{{- if .Values.enabled }}
+{{- if eq .Values.global.jenkins_enabled true }}
 apiVersion: v1
 kind: ImageStream
 metadata:
@@ -93,11 +93,11 @@ spec:
   triggers:
    - type: ConfigChange
    - github:
-     secret: LMXvyKLfn3-MY0-GOi0B
-     type: GitHub
+       secret: LMXvyKLfn3-MY0-GOi0B
+       type: GitHub
    - generic:
-     secret: pCIMGfFSMU2eLICEsGNI
-     type: Generic
+       secret: pCIMGfFSMU2eLICEsGNI
+       type: Generic
 ---
 apiVersion: v1
 kind: Secret

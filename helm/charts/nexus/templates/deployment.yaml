@@ -1,4 +1,4 @@
-{{- if .Values.enabled }}
+{{- if eq .Values.global.nexus_enabled true }}
 ---
 {{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) -}}
 kind: PersistentVolumeClaim
@@ -14,7 +14,7 @@ spec:
       storage: "{{ .Values.persistence.capacity }}"
 {{- end }}
 ---
-apiVersion: v1
+apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
 metadata:
   name: "{{ template "nexus.name" . }}"
@@ -64,9 +64,7 @@ spec:
           name: "{{ template "nexus.name" . }}"
       dnsPolicy: ClusterFirst
       restartPolicy: Always
-      securityContext:
-        capabilities: {}
-        privileged: false
+      securityContext: {}
       terminationGracePeriodSeconds: 30
       volumes:
       - name: "{{ template "nexus.name" . }}"
@@ -132,7 +130,7 @@ metadata:
   name: "{{ template "nexus.name" . }}-docker"
   namespace: {{ .Values.global.namespace }}
 spec:
-  host: "{{ .Values.global.nexus_repo_url }}"
+  host: "{{ .Values.nexus_repo_prefix }}.{{ .Values.global.cluster_url }}"
   to:
     name: nexus
   port:
@@ -140,7 +138,7 @@ spec:
   tls:
     termination: edge
 ---
-{{ $dockerSecret := printf "{\"auths\":{\"%s\":{\"username\":\"%s\",\"password\":\"%s\",\"email\":\"tssc@redhat.com\"}}}" .Values.global.nexus_repo_url .Values.global.nexus_user .Values.global.nexus_password }}
+{{ $dockerSecret := printf "{\"auths\":{\"%s.%s\":{\"username\":\"%s\",\"password\":\"%s\",\"email\":\"tssc@redhat.com\"}}}"  .Values.nexus_repo_prefix .Values.global.cluster_url .Values.global.nexus_user .Values.global.nexus_password }}
 apiVersion: v1
 data:
    .dockerconfigjson: "{{ b64enc $dockerSecret }}"  

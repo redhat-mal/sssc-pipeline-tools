@@ -1,4 +1,4 @@
-{{- if .Values.enabled }}
+{{- if eq .Values.global.jenkins_enabled true }}
 apiVersion: v1
 kind: DeploymentConfig
 metadata:

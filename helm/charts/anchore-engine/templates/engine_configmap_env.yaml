@@ -2,6 +2,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: {{ template "anchore-engine.fullname" . }}-env
+  namespace: {{ .Values.global.namespace }}
   labels:
     app: {{ template "anchore-engine.fullname" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}

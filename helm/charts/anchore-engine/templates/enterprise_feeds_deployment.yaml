@@ -4,6 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
+  namespace: {{ .Values.global.namespace }}
   labels:
     app: {{ template "anchore-engine.fullname" . }}
     component: {{ $component }}
@@ -182,6 +183,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
+  namespace: {{ .Values.global.namespace }}
   labels:
     app: {{ template "anchore-engine.fullname" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}

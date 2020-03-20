@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "anchore-engine.simplequeue.fullname" . }}
+  namespace: {{ .Values.global.namespace }}
   labels:
     app: {{ template "anchore-engine.fullname" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -164,6 +165,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "anchore-engine.simplequeue.fullname" . }}
+  namespace: {{ .Values.global.namespace }}
   labels:
     app: {{ template "anchore-engine.fullname" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}

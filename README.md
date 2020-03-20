@@ -10,8 +10,13 @@ The install parameters are defined in the helm/values.yaml.  The namespace is de
 
 ### Install via Apply
 
-helm template v1 ./helm | oc apply -f-
+````
+oc new-project tssc-tools
 
+helm template v1 ./helm/ --set global.namespace=tssc-tools --set global.cluster_url=mikes.sandbox389.opentlc.com | oc apply -f-
+
+oc start-bulid tssc-post-config-runonce
+````
 ### Install via Helm
 
-TODO: 
+TODO:  Need to migrate away from DeploymentConfigs to get this working 

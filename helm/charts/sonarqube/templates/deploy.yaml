@@ -1,4 +1,4 @@
-{{- if .Values.enabled }}
+{{- if eq .Values.global.sonar_enabled true }}
 apiVersion: v1
 items:
 {{- if .Values.deploy.sonar_ldap_enabled }}

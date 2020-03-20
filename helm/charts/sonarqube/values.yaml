@@ -3,7 +3,6 @@
 # Declare variables to be passed into your templates.
 
 
-enabled: false
 
 build:
   source_repository_url: "https://github.com/redhat-mal/containers-quickstarts.git"

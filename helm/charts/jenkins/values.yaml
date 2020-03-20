@@ -2,7 +2,10 @@
 # This is a YAML-formatted file.
 # Declare name/value pairs to be passed into your templates.
 # name: value
-enabled: false
+
+global:
+  jenkins_enabled: 'false'
+
 master:
   # Used for label app.kubernetes.io/component
   componentName: "jenkins-master"
