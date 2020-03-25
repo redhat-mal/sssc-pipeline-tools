@@ -25,6 +25,11 @@ oc start-bulid tssc-post-config-runonce
 ````
 ### Install via Helm
 
+````
+oc new-project tssc-tools
+
 helm install v1 ./helm/ --set global.namespace=tssc-tools --set global.cluster_url=mikes.sandbox389.opentlc.com
 
 oc start-build tssc-post-config-runonce
+````
+
