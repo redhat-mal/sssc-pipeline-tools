@@ -1,3 +1,4 @@
+{{- if eq .Values.global.anchore_enabled true }}
 {{- $component := "analyzer" -}}
 kind: ConfigMap
 apiVersion: v1
@@ -18,3 +19,4 @@ data:
     {{- with .Values.anchoreAnalyzer.configFile }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
+{{- end -}}

@@ -1,3 +1,4 @@
+{{- if eq .Values.global.anchore_enabled true }}
 {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseFeeds.enabled -}}
 {{- $component := "enterprise-feeds" -}}
 apiVersion: v1
@@ -24,4 +25,5 @@ data:
   {{- else }}
   ANCHORE_DB_HOST: "{{ template "postgres.anchore-feeds-db.fullname" . }}:5432"
   {{- end }}
+{{- end }}
 {{- end }}

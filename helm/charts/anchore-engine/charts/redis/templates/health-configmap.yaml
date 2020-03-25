@@ -1,3 +1,4 @@
+{{- if eq .Values.global.anchore_enabled true }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -52,3 +53,4 @@ data:
     "$script_dir/ping_local.sh" $1 || exit_status=$?
     "$script_dir/ping_master.sh" $1 || exit_status=$?
     exit $exit_status
+{{- end -}}

@@ -1,5 +1,5 @@
 {{- if eq .Values.global.jenkins_enabled true }}
-apiVersion: v1
+apiVersion: image.openshift.io/v1
 kind: ImageStream
 metadata:
   labels:
@@ -49,7 +49,7 @@ spec:
   - imageChange:
     type: ImageChange
 ---
-apiVersion: v1
+apiVersion: image.openshift.io/v1
 kind: ImageStream
 metadata:
   labels:
@@ -94,10 +94,10 @@ spec:
    - type: ConfigChange
    - github:
        secret: LMXvyKLfn3-MY0-GOi0B
-       type: GitHub
+     type: WebHookTrigger
    - generic:
        secret: pCIMGfFSMU2eLICEsGNI
-       type: Generic
+     type: WebHookTrigger
 ---
 apiVersion: v1
 kind: Secret
@@ -107,7 +107,7 @@ data:
   .dockerconfigjson: eyJhdXRocyI6eyJyZWdpc3RyeS5yZWRoYXQuaW8iOnsiYXV0aCI6Ik5UTXhPREl4TVh4MGMzTmpMV1JsYlc4dGJXdzZaWGxLYUdKSFkybFBhVXBUVlhwVmVFMXBTamt1WlhsS2VtUlhTV2xQYVVwc1QwZEZlazU2Um0xWlZFWnBUMFJuTUU1dFdtcFBSRmw2VDBkRmVGcEhVbXhPYWtFeFRXMUpkMDlEU2prdVpuQlFOVUoyWkRGNFZGSm9WVkJJUkVOclkweExMVmxPZFhSeWRHVm5TVVJNZWsxaFRsUlNSbU5XWlhsM1h5MDBZMnB4YjE5Zk9HSlBWVFp2TkRWc1dIbElhMDVpTWxodU1YTmtlakpHZUV0ck5Xa3dTblJYVFdKelFrb3dSV05KYTI5V2NXVnhVbXBDY0dGUFEycG5aWE5QVUUxeGVEWjRUV2cxWWs1NU5sbG9jbWRNTlRSd1JubGtjRlZoUm14MExXUkNiWHB5ZFhaS1JqbG5WbFJJWjBSS2FuaEhPSGt3UTB4M2VGTlFNbmh3YTNoaFV5MDVXakpFYzFOak5GSnNSRVJSUnpRNFYwNDNUbVV3TkRkMGJHcHRaRmR2TUdKMFkxbFNjRXQxYVZoelNuVlZlVmg0TjFsM1ppMWtUa3R0VjBSdlZtVndVa1ZPYW0xaloyWndZbGd6TmpoRlVFbFhORVZDVEZrek9GSmhVMnBNY25oM1RGVjRSbmhEV0ZONVdXY3RjbFJhV0dkUlRuVnRSSE5FZDBnNWExRnpYMGhJUzNVelFXOWhiMFpqTkUwelRsWTFUMGRVU3pSSVFsRTVXREZGVTNKQmRWRkZOVmxLWVZGUmFGaFNUa1oxYTBOemJIaGxkREptUmxGS1owaENhVWMyZVhwZlNsOWxjMFpUUVZsSVlVY3pYMmhCYm1sWWFIWmxRV1F4VFV4M1dWTlZPVlpXVWs5UWFHeGhhakY1ZW1ORmRFaFBXR1JRVkU5SVpsVmxaMjl2VGxWS1IwMUtSRVJOUkZWbk5uaHpaRkpsWmt4M2MzZEtjbkZQTnpVelRGWndlbmhxVERkb1dsUlhZMmxKZUZsWlgySjZhbmxEZVVWQk0ySlVPR0pqUkVoYVMyeHljbFpYYkZoeFNqWXlUV2hmTUZZeGRteERiVGd3WmpsNE9XcEpabGhEZVVaRE1GQlZialJpY0VkTGExUkpNa1pqWWxGNFFYbEdia2hJTTJSSGRVSnRiRlpDWkZSRk9YSlNhWEp1VVdwRU5tbFljRkZKTWxwZllscFRXa0l4V2pKVFlYTjRWblJuWjBNdFRuQmxla1JLWlhsNmVVcEVWRTVpZVZSNVExaHRiV0pvT0dkdmRUWjRaRGt5Tm5oQmRUVnlWRGs0VEZkNmFsRnJPRVJGU21oRWEwZDNjMlpGYjNCa2VsVmtkRTlGT0VrPSJ9fX0=
 type: kubernetes.io/dockerconfigjson
 ---
-apiVersion: v1
+apiVersion: build.openshift.io/v1
 kind: BuildConfig
 metadata:
   annotations:
@@ -137,4 +137,5 @@ spec:
         value: "{{ .Values.global.anchore_enabled }}"
       - name: "NEXUS_ENABLED"
         value: "{{ .Values.global.nexus_enabled }}"
+  triggers: []
 {{- end }}

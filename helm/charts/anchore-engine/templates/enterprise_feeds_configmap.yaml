@@ -1,3 +1,4 @@
+{{- if eq .Values.global.anchore_enabled true }}
 {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseFeeds.enabled -}}
 {{- $component := "enterprise-feeds" -}}
 apiVersion: v1
@@ -121,4 +122,5 @@ data:
         ssl_cert: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"
         ssl_key: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
         {{- end }}
+{{- end -}}
 {{- end -}}

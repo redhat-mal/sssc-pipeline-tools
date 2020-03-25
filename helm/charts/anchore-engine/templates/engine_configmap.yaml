@@ -1,3 +1,4 @@
+{{- if eq .Values.global.anchore_enabled true }}
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -219,3 +220,4 @@ data:
         ssl_key: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretKeyName }}"
         {{- end }}
 
+{{- end -}}

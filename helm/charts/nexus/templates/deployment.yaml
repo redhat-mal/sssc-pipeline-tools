@@ -14,23 +14,29 @@ spec:
       storage: "{{ .Values.persistence.capacity }}"
 {{- end }}
 ---
-apiVersion: apps.openshift.io/v1
-kind: DeploymentConfig
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: "{{ template "nexus.name" . }}"
   namespace: {{ .Values.global.namespace }}
   labels:
-    app: "{{ template "nexus.name" . }}"
+    app: {{ template "nexus.name" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   replicas: 1
   selector:
-    name: "{{ template "nexus.name" . }}"
+    matchLabels:
+      app: {{ template "nexus.name" . }}
+      release: "{{ .Release.Name }}"
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        name: "{{ template "nexus.name" . }}"
+        app: "{{ template "nexus.name" . }}"
+        release: "{{ .Release.Name }}"
+      name: "{{ template "nexus.name" . }}"
     spec:
       containers:
       - image: "sonatype/nexus3:3.7.1"
@@ -54,7 +60,7 @@ spec:
         - containerPort: 5000
           protocol: TCP
         resources:
-          limit:
+          limits:
             memory: {{.Values.memory_limit }}
           requests:
             memory: 256Mi
@@ -74,9 +80,6 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
-  test: false
-  triggers:
-  - type: ConfigChange
 ---
 apiVersion: v1
 kind: Service
@@ -97,11 +100,12 @@ spec:
     targetPort: 5000
     name: repo-port
   selector:
-    name: "{{ template "nexus.name" . }}"
+    release: "{{ .Release.Name }}"
+    app: {{ template "nexus.name" . }}
   sessionAffinity: None
   type: ClusterIP
 ---
-apiVersion: v1
+apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   labels:
@@ -121,8 +125,8 @@ spec:
     weight: 100
   wildcardPolicy: None
 ---
-kind: Route
 apiVersion: route.openshift.io/v1
+kind: Route
 metadata:
   labels:
     name: "{{ template "nexus.name" . }}-docker"
@@ -132,6 +136,7 @@ metadata:
 spec:
   host: "{{ .Values.nexus_repo_prefix }}.{{ .Values.global.cluster_url }}"
   to:
+    kind: Service
     name: nexus
   port:
     targetPort: 5000

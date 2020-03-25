@@ -1,6 +1,6 @@
 {{- if eq .Values.global.jenkins_enabled true }}
-apiVersion: v1
-kind: DeploymentConfig
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   annotations:
     template.alpha.openshift.io/wait-for-ready: "true"
@@ -15,17 +15,22 @@ metadata:
 spec:
   replicas: 1
   selector:
-    name: {{ template "jenkins.name" . }}
+    matchLabels:
+      "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+      "app.kubernetes.io/instance": "{{ .Release.Name }}"
+      "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        name: {{ template "jenkins.name" . }}
+        "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+        "app.kubernetes.io/instance": "{{ .Release.Name }}"
+        "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
+      name: {{ template "jenkins.name" . }}
     spec:
       containers:
-        - capabilities: {}
-          env:
+        - env:
             - name: JAVA_OPTS
               value: {{ default "" .Values.master.javaOpts | quote }}
             - name: JENKINS_OPTS
@@ -70,7 +75,7 @@ spec:
             - name: GITLAB_GROUP_NAME
               value: {{ .Values.master.gitlab.group_name }}
       {{- end }}
-          image: ' '
+          image: "image-registry.openshift-image-registry.svc:5000/{{ .Values.global.namespace }}/{{ template "jenkins.name" . }}:latest"
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 2
@@ -89,9 +94,7 @@ spec:
             timeoutSeconds: 240
           resources:
 {{ toYaml .Values.master.resources | indent 12 }}
-          securityContext:
-            capabilities: {}
-            privileged: false
+          securityContext: {}
           terminationMessagePath: /dev/termination-log
           volumeMounts:
             - mountPath: /var/lib/jenkins
@@ -107,18 +110,6 @@ spec:
       {{- else }}
           emptyDir: {}
       {{- end }}
-  triggers:
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-          - jenkins
-        from:
-          kind: ImageStreamTag
-          name: {{ template "jenkins.name" . }}:latest
-          namespace:  {{ .Values.global.namespace }}
-        lastTriggeredImage: ""
-      type: ImageChange
-    - type: ConfigChange
 
 {{- end }}
 

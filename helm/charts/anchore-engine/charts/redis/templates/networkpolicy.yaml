@@ -1,3 +1,4 @@
+{{- if eq .Values.global.anchore_enabled true }}
 {{- if .Values.networkPolicy.enabled }}
 kind: NetworkPolicy
 apiVersion: {{ template "networkPolicy.apiVersion" . }}
@@ -36,3 +37,4 @@ spec:
       - port: 9121
     {{- end }}
 {{- end }}
+{{- end -}}

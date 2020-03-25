@@ -1,3 +1,4 @@
+{{- if eq .Values.global.anchore_enabled true }}
 {{- $component := "simplequeue" -}}
 apiVersion: apps/v1
 kind: Deployment
@@ -192,3 +193,4 @@ spec:
   selector:
     app: {{ template "anchore-engine.fullname" . }}
     component: {{ $component }}
+{{- end }}

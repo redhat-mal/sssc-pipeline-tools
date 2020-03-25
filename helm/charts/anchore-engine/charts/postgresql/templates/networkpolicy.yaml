@@ -1,3 +1,4 @@
+{{- if eq .Values.global.anchore_enabled true }}
 {{- if .Values.networkPolicy.enabled }}
 kind: NetworkPolicy
 apiVersion: {{ template "postgresql.networkPolicy.apiVersion" . }}
@@ -27,3 +28,4 @@ spec:
     - ports:
       - port: 9187
 {{- end }}
+{{- end -}}

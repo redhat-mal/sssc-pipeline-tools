@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
-memore_limit: 1Gi
+memory_limit: 1Gi
 nexus_repo_prefix: "repo-nexus.apps" 
 
 persistence:

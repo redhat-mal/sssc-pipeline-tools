@@ -1,3 +1,4 @@
+{{- if eq .Values.global.anchore_enabled true }}
 {{- if .Values.cluster.enabled }}
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -202,4 +203,5 @@ spec:
         hostPath:
           path: /sys
       {{- end }}
+{{- end }}
 {{- end }}

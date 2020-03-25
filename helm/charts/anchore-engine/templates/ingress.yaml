@@ -1,3 +1,4 @@
+{{- if eq .Values.global.anchore_enabled true }}
 {{- if .Values.ingress.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -82,3 +83,5 @@ spec:
         {{- end }}
   {{- end }}
 {{- end -}}
+{{- end -}}
+

@@ -1,3 +1,4 @@
+{{- if eq .Values.global.anchore_enabled true }}
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -21,3 +22,4 @@ data:
   {{- else }}
   ANCHORE_DB_HOST: "{{ template "postgres.fullname" . }}:5432"
   {{- end }}
+{{- end -}}

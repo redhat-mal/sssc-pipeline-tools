@@ -1,3 +1,4 @@
+{{- if eq .Values.global.anchore_enabled true }}
 {{- $component := "api" -}}
 apiVersion: apps/v1
 kind: Deployment
@@ -538,3 +539,4 @@ spec:
     weight: 100
   wildcardPolicy: None
 
+{{- end -}}

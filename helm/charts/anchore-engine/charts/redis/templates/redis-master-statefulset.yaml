@@ -1,3 +1,4 @@
+{{- if eq .Values.global.anchore_enabled true }}
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
@@ -250,3 +251,4 @@ spec:
       partition: {{ .Values.master.statefulset.rollingUpdatePartition }}
     {{- end }}
     {{- end }}
+{{- end -}}

@@ -21,7 +21,9 @@ spec:
     protocol: TCP
     targetPort: 8080
   selector:
-    name: {{template "jenkins.name" . }}
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
   sessionAffinity: None
   type: ClusterIP
 ---
@@ -41,7 +43,9 @@ spec:
     protocol: TCP
     targetPort: 50000
   selector:
-    name: {{template "jenkins.name" . }}
+    "app.kubernetes.io/name": '{{ template "jenkins.name" .}}'
+    "app.kubernetes.io/instance": "{{ .Release.Name }}"
+    "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
   sessionAffinity: None
   type: ClusterIP
 {{- end }}

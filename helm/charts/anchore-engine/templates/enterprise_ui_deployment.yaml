@@ -1,3 +1,4 @@
+{{- if eq .Values.global.anchore_enabled true }}
 {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseUi.enabled -}}
 {{- $component := "enterprise-ui" -}}
 
@@ -180,4 +181,5 @@ spec:
     app: {{ template "anchore-engine.fullname" . }}
     component: {{ $component }}
 
+{{- end -}}
 {{- end -}}

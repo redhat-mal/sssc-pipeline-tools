@@ -1,3 +1,4 @@
+{{- if eq .Values.global.anchore_enabled true }}
 {{- if .Values.metrics.enabled }}
 apiVersion: v1
 kind: Service
@@ -27,3 +28,4 @@ spec:
     release: {{ .Release.Name }}
     role: metrics
 {{- end }}
+{{- end -}}

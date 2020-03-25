@@ -1,3 +1,4 @@
+{{- if eq .Values.global.anchore_enabled true }}
 {{- if .Values.metrics.enabled }}
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -89,3 +90,4 @@ spec:
             secretName: {{ template "redis.secretName" . }}
       {{- end }}
 {{- end }}
+{{- end -}}
