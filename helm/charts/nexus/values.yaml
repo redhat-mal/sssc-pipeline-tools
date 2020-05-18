@@ -2,6 +2,9 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+global:
+  nexus_enabled: true
+
 replicaCount: 1
 memory_limit: 1Gi
 nexus_repo_prefix: "repo-nexus.apps" 
