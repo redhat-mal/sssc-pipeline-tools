@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tssc-pipeline-tools
+  # You'll usually want to add your resources to the argocd namespace.
+  namespace: argocd
+  # Add a this finalizer ONLY if you want these to cascade delete.
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: tssc
+  source:
+    repoURL: 'https://github.com/redhat-mal/tssc-pipeline-tools.git'
+    path: helm
+    targetRevision: argocd
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: global.cluster_url
+          value: az43.mikes.mikelacourseocp.com
+        - name: global.namespace
+          value: tssc-tools
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: tssc-tools
+  syncPolicy:
+    automated:
+      prune: true

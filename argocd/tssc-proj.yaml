@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: tssc
+  namespace: argocd
+spec:
+  description: tssc
+  destinations:
+  - namespace: tssc-tools
+    server: https://kubernetes.default.svc
+  - namespace: demo-pipeline
+    server: https://kubernetes.default.svc
+  sourceRepos:
+  - https://github.com/redhat-mal/tssc-pipeline-tools.git
